@@ -1,0 +1,89 @@
+// ============================================================================
+// 1. 환경 감지 스위치 (회사에만 offline.flag 파일 만들기!)
+// ============================================================================
+def isOffline = file('offline.flag').exists()
+
+// ============================================================================
+// 2. 작업 반장 세팅 (플러그인)
+// ============================================================================
+buildscript {
+	def isOffline = file('offline.flag').exists()
+	repositories {
+		if (!isOffline) { mavenCentral() }
+	}
+	dependencies {
+		if (isOffline) {
+			classpath fileTree(dir: 'libs', include: ['*.jar'])
+		} else {
+			classpath 'org.springframework.boot:spring-boot-gradle-plugin:4.1.0'
+			classpath 'io.spring.gradle:dependency-management-plugin:1.1.7'
+		}
+	}
+}
+
+apply plugin: 'java'
+if (!isOffline) {
+	apply plugin: 'org.springframework.boot'
+	apply plugin: 'io.spring.dependency-management'
+}
+
+group = 'hello'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+// ============================================================================
+// 3. 내 프로젝트 자재(Dependencies) 세팅
+// ============================================================================
+repositories {
+	if (!isOffline) { mavenCentral() }
+}
+
+def sharedLibsPath = 'D:/DEV/workspace/shared-libs'
+
+
+dependencies {
+	if (isOffline) {
+		// [회사/폐쇄망] libs 폴더에서 모든 부품(실행, 컴파일, 롬복, 테스트) 꺼내 쓰기
+		implementation fileTree(dir: 'sharedLibsPath', include: ['*.jar'])
+		compileOnly fileTree(dir: 'sharedLibsPath', include: ['*.jar'])
+		annotationProcessor fileTree(dir: 'sharedLibsPath', include: ['*.jar'])
+
+		testImplementation fileTree(dir: 'sharedLibsPath', include: ['*.jar'])
+		testCompileOnly fileTree(dir: 'sharedLibsPath', include: ['*.jar'])
+		testAnnotationProcessor fileTree(dir: 'sharedLibsPath', include: ['*.jar'])
+	} else {
+		// [집/온라인] 인터넷에서 개별 다운로드 (작성해주신 내용 그대로!)
+		implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+		implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+		compileOnly 'org.projectlombok:lombok'
+		annotationProcessor 'org.projectlombok:lombok'
+
+		testImplementation 'org.springframework.boot:spring-boot-starter-thymeleaf-test'
+		testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+		testCompileOnly 'org.projectlombok:lombok'
+		testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+		testAnnotationProcessor 'org.projectlombok:lombok'
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+// ============================================================================
+// 4. 📦 회사로 가져갈 부품 포장 기능 (집에서만 작동)
+// ============================================================================
+if (!isOffline) {
+	task copyDependencies(type: Copy) {
+		from configurations.runtimeClasspath     // 1. 실행 부품 (WebMVC, Thymeleaf 등)
+		from configurations.compileClasspath     // 2. 컴파일 부품 (Lombok 등)
+		from configurations.annotationProcessor  // 3. 코드 생성기 (Lombok 등)
+		from configurations.testRuntimeClasspath // 4. 테스트 부품 (JUnit 등)
+		into 'libs'
+	}
+}
