@@ -40,6 +40,8 @@ public class MessageSourceTest {
     void argumentMessage(){
         String result = ms.getMessage("hello.name", new Object[]{"Spring"}, null);
         Assertions.assertThat(result).isEqualTo("안녕 Spring");
+
+        //<p th:text="#{hello.name(${item.itemName})}"></p>
     }
 
     @Test

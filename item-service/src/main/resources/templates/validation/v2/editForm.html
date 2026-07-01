@@ -6,53 +6,42 @@
           href="../css/bootstrap.min.css" rel="stylesheet">
     <style>
         .container {
-            max-width: 560px;
-        }
-        .field-error {
-            border-color: #dc3545;
-            color: #dc3545;
+        max-width: 560px;
         }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="py-5 text-center">
-        <h2 th:text="#{page.addItem}">상품 등록 폼</h2>
+        <h2 th:text="#{page.updateItem}">상품 수정 폼</h2>
     </div>
-    <h4 class="mb-3">상품 입력</h4>
     <form action="item.html" th:action th:object="${item}" method="post">
-        <div th:if="${errors?.containsKey('globalError')}">
-            <p class="field-error" th:text="#{error.item.globalErrors}">전체 오류 메시지 </p>
+        <div>
+            <label for="id" th:text="#{label.item.id}">상품 ID</label>
+            <input type="text" id="id" class="form-control" th:field="*{id}" readonly>
         </div>
         <div>
             <label for="itemName" th:text="#{label.item.itemName}">상품명</label>
-            <input type="text" id="itemName" th:field="*{itemName}"
-                   th:class="${errors?.containsKey('itemName')} ? 'form-control field-error' : 'form-control'"
-                   class="form-control" placeholder="이름을 입력하세요">
-            <div class="field-error" th:if="${errors?.containsKey('itemName')}" th:text="${errors['itemName']}">상품명오류</div>
+            <input type="text" id="itemName" class="form-control" th:field="*{itemName}">
         </div>
         <div>
             <label for="price" th:text="#{label.item.price}">가격</label>
-            <input type="text" id="price" th:field="*{price}"
-                   th:class="${errors?.containsKey('price')} ? 'form-control field-error' : 'form-control'"
-                   class="form-control" placeholder="가격을 입력하세요">
-            <div class="field-error" th:if="${errors?.containsKey('price')}" th:text="${errors['price']}">가격오류</div>
+            <input type="text" id="price" th:field="*{price}" class="form-control">
         </div>
         <div>
             <label for="quantity" th:text="#{label.item.quantity}">수량</label>
-            <input type="text" id="quantity" th:field="*{quantity}"
-                   th:class="${errors?.containsKey('quantity')} ? 'form-control field-error' : 'form-control'"
-                   class="form-control" placeholder="수량을 입력하세요">
-            <div class="field-error" th:if="${errors?.containsKey('quantity')}" th:text="${errors['quantity']}">수량오류</div>
+            <input type="text" id="quantity" class="form-control" th:field="*{quantity}" >
         </div>
+
         <!-- Single checkbox -->
-        <div>판매 여부</div>
+        <div>판매여부</div>
         <div>
             <div class="form-check">
                 <input type="checkbox" id="open" th:field="*{open}" class="form-check-input">
                 <label for="open" class="form-check-label">판매 오픈</label>
             </div>
         </div>
+
         <!-- Multi checkbox -->
         <div>
             <div>등록 지역</div>
@@ -62,7 +51,6 @@
                        th:text="${region.value}" class="form-check-label">서울</label>
             </div>
         </div>
-
         <!-- Radio button -->
         <div>
             <div>상품종류</div>
@@ -81,17 +69,15 @@
                         th:text="${deliveryCode.displayName}"></option>
             </select>
         </div>
-
-
         <hr class="my-4">
         <div class="row">
             <div class="col">
-                <button class="w-100 btn btn-primary btn-lg" type="submit" th:text="#{button.save}">상품 등록</button>
+                <button class="w-100 btn btn-primary btn-lg" type="submit" th:text="#{button.save}">저장</button>
             </div>
             <div class="col">
                 <button class="w-100 btn btn-secondary btn-lg"
-                        onclick="location.href='items.html'"
-                        th:onclick="|location.href='@{/basic/items}'|"
+                        onclick="location.href='item.html'"
+                        th:onclick="|location.href='@{/validation/v2/items}'|"
                         type="button" th:text="#{button.cancel}">취소</button>
             </div>
         </div>
