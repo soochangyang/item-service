@@ -60,6 +60,7 @@ dependencies {
 		// [집/온라인] 인터넷에서 개별 다운로드 (작성해주신 내용 그대로!)
 		implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 		implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+		implementation 'org.springframework.boot:spring-boot-starter-validation'
 		compileOnly 'org.projectlombok:lombok'
 		annotationProcessor 'org.projectlombok:lombok'
 
