@@ -1,19 +1,19 @@
 package hello.itemservice.domain.item;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.List;
 
-//@Getter
-//@Setter
 @Data
+
 public class Item {
 
     private Long id;
+
     private String itemName;
+
     private Integer price;
+
     private Integer quantity;
 
     private Boolean open; //판매여부
